@@ -1,0 +1,13 @@
+route:
+  receiver: telegram
+
+receivers:
+  - name: telegram
+    telegram_configs:
+      - bot_token: "8233787618:AAFqU4Pj4Lv_kexMRV5d7m8FIID5vcuPAsg"
+        chat_id: 900383523
+        message: |
+          🚨 ALERTA 🚨
+          {{ range .Alerts }}
+          Alerta: {{ .Annotations.summary }}
+          {{ end }}
