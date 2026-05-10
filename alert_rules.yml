@@ -4,12 +4,36 @@ groups:
 
       - alert: HostDown
         expr: up == 0
-        for: 30s
+        for: 1m
+        labels:
+          severity: critical
         annotations:
           summary: "Servidor caído"
+          description: "El host no responde a Prometheus"
 
       - alert: HighCPU
-        expr: 100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 80
-        for: 1m
+        expr: 100 - (avg by(instance)(irate(node_cpu_seconds_total{mode="idle"}[1m])) * 100) > 50
+        for: 2m
+        labels:
+          severity: warning
         annotations:
           summary: "CPU alta detectada"
+          description: "CPU > 50% por más de 2 minutos"
+
+      - alert: HighRAM
+        expr: (1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100 > 30
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "RAM alta detectada"
+          description: "RAM >30%"
+
+      - alert: HighLatencyInternet
+        expr: probe_duration_seconds > 0.1
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Latencia alta de internet"
+          description: "Ping mayor a 20ms"
